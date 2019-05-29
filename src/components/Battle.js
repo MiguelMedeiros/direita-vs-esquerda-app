@@ -11,6 +11,13 @@ const useStyles = makeStyles({
   }),
 });
 
+const preloadImg = src => new Promise((resolve, reject) => {
+  const img = new Image();
+  img.onload = () => resolve()
+  img.onerror = () => reject()
+  img.src = src
+})
+
 const useActiveBattle = () => {
   const [activeBattle, setActiveBattle] = useState(null);
 
@@ -23,6 +30,10 @@ const useActiveBattle = () => {
       const battles = await result.json();
       const activeBattle = battles.find(x => x.active);
       // console.log(activeBattle);
+      // const srcs = activeBattle.battleChallangers.map(x => x.whatever_image_src)
+      const srcs = ["./img/mortadela.png", "./img/coxinha.png"]
+      await Promise.all(srcs.map(preloadImg))
+      
       if (!ignore) {
         setActiveBattle(activeBattle);
       }
@@ -117,7 +128,7 @@ const Fighters = ({ battleChallangers, hastagBattle, slug }) => {
             {i === 0 && <img alt="personagem" src="./img/mortadela.png" />}
             {i === 1 && <img alt="personagem" src="./img/coxinha.png" />}
           </div>
-        </div>
+        </div> 
       ))}
     </div>
   );
